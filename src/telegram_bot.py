@@ -7,8 +7,14 @@ from extractor import extract_order
 
 import requests
 
-GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-2KSsn9jrub3sv3cXVaCynCzEyNPEet4rSQ7Ci2q5qrO_6ioJCqzNVJAA0dduV8Ql/exec"
-TOKEN = "8471148674:AAEpHnowtVM6fLvii34jZuJPL-7B0lf8Fw0"
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+GOOGLE_SCRIPT_URL = os.getenv("GOOGLE_SCRIPT_URL")
 
 logging.basicConfig(level=logging.INFO)
 
