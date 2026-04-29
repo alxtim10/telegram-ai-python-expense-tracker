@@ -76,8 +76,6 @@ Message:
 {message}
 """
 
-    print("INPUT:", message)
-    print("OUTPUT:", response)
 
     response = requests.post(
         OLLAMA_URL,
@@ -87,6 +85,9 @@ Message:
             "stream": False
         }
     )
+
+    print("INPUT:", message)
+    print("OUTPUT:", response)
 
     result = response.json()
     text_output = result.get("response", "")
