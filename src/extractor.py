@@ -6,7 +6,7 @@ from utils import normalize_category
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "gemma"
 
-PROMPT_TEMPLATE = """
+PROMPT_TEMPLATE = f"""
 You are an API that extracts daily expenses from Indonesian messages.
 
 Return ONLY valid JSON. No explanation.
@@ -43,11 +43,11 @@ Examples:
 
 Message: aku beli kopi 25k
 Output:
-{"expenses":[{"name":"kopi","amount":25000,"category":"food"}]}
+{{"expenses":[{{"name":"kopi","amount":25000,"category":"food"}}]}}
 
 Message: naik gojek 15000
 Output:
-{"expenses":[{"name":"gojek","amount":15000,"category":"transport"}]}
+{{"expenses":[{{"name":"gojek","amount":15000,"category":"transport"}}]}}
 
 Message:
 {message}
