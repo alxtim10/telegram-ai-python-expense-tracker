@@ -1,0 +1,17 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+src/__pycache__/
+
+# Env files
+.env
+
+# Logs
+*.log
+
+# Mac
+.DS_Store
+
+# CSV outputs (optional)
+expenses_log.csv
