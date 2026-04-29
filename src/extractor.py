@@ -55,51 +55,29 @@ Message:
 
 def extract_order(message: str):
     prompt = f"""
-You are an API that extracts daily expenses from Indonesian messages.
+Extract expenses from this Indonesian message.
 
-Return ONLY valid JSON. No explanation.
-
-Schema:
-{{
-  "expenses": [
-    {{
-      "name": string,
-      "amount": integer,
-      "category": string
-    }}
-  ]
-}}
-
-Categories:
-- food
-- transport
-- shopping
-- bills
-- entertainment
-- other
+Return JSON ONLY:
+{{"expenses":[{{"name":string,"amount":integer,"category":string}}]}}
 
 Rules:
-- Extract item/service name
-- Extract total price in integer (Rupiah, no dots/commas)
-- Convert formats: 25k=25000, 10rb=10000, 1jt=1000000
-- If multiple items, separate them
-- If no name, use "unknown"
-- Assign the most relevant category
-- If unsure → use "other"
+- Must include price
+- Convert: 25k=25000, 10rb=10000, 1jt=1000000
+- No price → return empty list
 
-Examples:
-
+Example:
 Message: aku beli kopi 25k
-Output:
-{{"expenses":[{{"name":"kopi","amount":25000,"category":"food"}}]}}
+Output: {{"expenses":[{{"name":"kopi","amount":25000,"category":"food"}}]}}
 
-Message: naik gojek 15000
-Output:
-{{"expenses":[{{"name":"gojek","amount":15000,"category":"transport"}}]}}
+Message: aku ngobrol doang
+Output: {{"expenses":[]}}
 
 Message:
 {message}
 """
+
+    print("INPUT:", message)
+    print("OUTPUT:", response)
 
     response = requests.post(
         OLLAMA_URL,
