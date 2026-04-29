@@ -1,12 +1,20 @@
 import logging
 import asyncio
-import json
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 from extractor import extract_order
 
-TOKEN = "8471148674:AAEpHnowtVM6fLvii34jZuJPL-7B0lf8Fw0"
+import requests
+
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+GOOGLE_SCRIPT_URL = os.getenv("GOOGLE_SCRIPT_URL")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,15 +23,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Send me an order message 🧾")
 
 
+def send_to_sheets(data: dict):
+    try:
+        response = requests.post(GOOGLE_SCRIPT_URL, json=data)
+        print("✅ Sent to Google Sheets:", response.text)
+    except Exception as e:
+        print("❌ Failed to send:", e)
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
 
     # Run extraction safely (non-blocking)
     result = await asyncio.to_thread(extract_order, user_text)
+    send_to_sheets(result)
 
     # 1️⃣ Human response
     human_reply = format_human_response(result)
+
     await update.message.reply_text(human_reply)
 
     # 2️⃣ JSON response
@@ -35,22 +51,18 @@ def format_human_response(data: dict) -> str:
     if not data or "expenses" not in data:
         return "⚠️ Gagal membaca pengeluaran."
 
-    name = data.get("person", "kamu")
-    expenses = data.get("expenses", [])
-
-    lines = [
-        f"Siap Alex! 💸",
-        "Pengeluaran kamu tercatat:"
-    ]
+    lines = ["💸 Pengeluaran tercatat:"]
 
     total = 0
 
-    for item in expenses:
+    for item in data.get("expenses", []):
+        name = item.get("name", "")
         amount = item.get("amount", 0)
-        item_name = item.get("name", "")
+        category = item.get("category", "other")
+
         total += amount
 
-        lines.append(f"• {item_name} → Rp{amount:,}")
+        lines.append(f"• {name} ({category}) → Rp{amount:,}")
 
     lines.append(f"\nTotal: Rp{total:,}")
 

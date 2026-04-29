@@ -21,3 +21,20 @@ def safe_json_loads(text):
     except Exception as e:
         print("❌ JSON parse error:", e)
         return {}
+
+def normalize_category(name: str) -> str:
+    name = name.lower()
+
+    rules = {
+        "food": ["kopi", "makan", "nasi", "roti", "pizza", "burger"],
+        "transport": ["gojek", "grab", "bensin", "tol"],
+        "shopping": ["baju", "sepatu", "belanja"],
+        "bills": ["listrik", "air", "internet"],
+        "entertainment": ["movie", "netflix", "game"]
+    }
+
+    for category, keywords in rules.items():
+        if any(k in name for k in keywords):
+            return category
+
+    return "other"
