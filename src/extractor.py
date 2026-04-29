@@ -88,6 +88,8 @@ Message:
 
     print("INPUT:", message)
     print("OUTPUT:", response)
+    print(response.status_code)
+    print(response.text)
 
     result = response.json()
     text_output = result.get("response", "")
