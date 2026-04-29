@@ -44,7 +44,26 @@ Message:
 """
 
 def extract_order(message: str):
-    prompt = PROMPT_TEMPLATE.format(message=message)
+    prompt = f"""
+Extract expense from this message.
+
+Return JSON:
+{{"expenses":[{{"name":string,"amount":integer,"category":string}}]}}
+
+Rules:
+- Only extract what exists in the message
+- Do not invent data
+- One expense → one item
+- Convert 25k=25000
+- If no expense → return empty list
+
+Example:
+Message: aku beli nasi goreng 20000
+Output: {{"expenses":[{{"name":"nasi goreng","amount":20000,"category":"food"}}]}}
+
+Message:
+{message}
+"""
 
     response = requests.post(
         OLLAMA_URL,
