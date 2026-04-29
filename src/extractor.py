@@ -4,7 +4,7 @@ from utils import normalize_category
 
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "gemma"
+MODEL = "tinyllama"
 
 PROMPT_TEMPLATE = """
 You are an API that extracts daily expenses from Indonesian messages.
