@@ -39,43 +39,12 @@ Rules:
 - Assign the most relevant category
 - If unsure → use "other"
 
-Examples:
-
-Message: aku beli kopi 25k
-Output:
-{{"expenses":[{{"name":"kopi","amount":25000,"category":"food"}}]}}
-
-Message: naik gojek 15000
-Output:
-{{"expenses":[{{"name":"gojek","amount":15000,"category":"transport"}}]}}
-
 Message:
 {message}
 """
 
 def extract_order(message: str):
-    prompt = f"""
-Extract expenses from this Indonesian message.
-
-Return JSON ONLY:
-{{"expenses":[{{"name":string,"amount":integer,"category":string}}]}}
-
-Rules:
-- Must include price
-- Convert: 25k=25000, 10rb=10000, 1jt=1000000
-- No price → return empty list
-
-Example:
-Message: aku beli kopi 25k
-Output: {{"expenses":[{{"name":"kopi","amount":25000,"category":"food"}}]}}
-
-Message: aku ngobrol doang
-Output: {{"expenses":[]}}
-
-Message:
-{message}
-"""
-
+    prompt = PROMPT_TEMPLATE.format(message=message)
 
     response = requests.post(
         OLLAMA_URL,
@@ -85,11 +54,6 @@ Message:
             "stream": False
         }
     )
-
-    print("INPUT:", message)
-    print("OUTPUT:", response)
-    print(response.status_code)
-    print(response.text)
 
     result = response.json()
     text_output = result.get("response", "")
