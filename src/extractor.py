@@ -7,7 +7,9 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "gemma"
 
 PROMPT_TEMPLATE = """
-Extract structured order data from the message.
+You are an API that extracts daily expenses from Indonesian messages.
+
+Return ONLY valid JSON. No explanation.
 
 Schema:
 {{
@@ -36,6 +38,16 @@ Rules:
 - If no name, use "unknown"
 - Assign the most relevant category
 - If unsure → use "other"
+
+Examples:
+
+Message: aku beli kopi 25k
+Output:
+{"expenses":[{"name":"kopi","amount":25000,"category":"food"}]}
+
+Message: naik gojek 15000
+Output:
+{"expenses":[{"name":"gojek","amount":15000,"category":"transport"}]}
 
 Message:
 {message}
