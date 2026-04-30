@@ -7,7 +7,9 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "gemma"
 
 PROMPT_TEMPLATE = """
-Extract structured order data from the message.
+You are an API that extracts daily expenses from Indonesian messages.
+
+Return ONLY valid JSON. No explanation.
 
 Schema:
 {{
