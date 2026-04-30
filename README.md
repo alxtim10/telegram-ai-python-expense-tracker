@@ -1,85 +1,118 @@
-# 💸 AI Expense Tracker (Telegram Bot + Ollama + Gemma)
+# 💸 AI Expense Tracker (Telegram Bot + Gemini + Google Sheets)
 
 ## 📌 Overview
 
-This project is a **local AI-powered expense tracking system** that reads natural language messages (from Telegram), extracts structured expense data, and logs it for daily tracking.
+This project is a **personal finance assistant powered by AI** that lets you log expenses via Telegram chat in natural language.
 
-It uses:
+It automatically:
 
-* Ollama for running models locally
-* Gemma for parsing text into structured data
-* Telegram Bot API as the user interface
+* Extracts expense data using AI
+* Stores it in Google Sheets
+* Provides summaries, details, and insights
+
+Built with:
+
+* Google AI Studio (Gemini API for NLP)
+* Telegram Bot API (user interface)
+* Google Sheets (data storage & analytics)
+* Python (backend logic)
 
 ---
 
 ## 🚀 Features
 
-* 🧠 Extract expenses from messy chat messages
-* 💬 Dual response:
+### 🧠 AI Expense Extraction
 
-  * Human-friendly reply
-  * Structured JSON output
-* 💸 Automatically calculates totals
-* 💾 Logs expenses into CSV
-* 🔌 Runs fully offline (no external API)
+Send messages like:
+
+```text
+aku beli nasi goreng 20000
+```
+
+Bot automatically extracts:
+
+* item name
+* amount
+* category
 
 ---
 
-## 🧾 Example
+### 💬 Dual Response
 
-### Input (Telegram message)
+Bot replies with:
 
-```
-Beli kopi 25k sama roti 15k - Alex
-```
+* 🤖 Human-friendly message
+* 📦 Structured JSON (optional)
 
 ---
 
-### 🤖 Bot Reply
+### 📊 Summary Commands
 
+| Command    | Description     |
+| ---------- | --------------- |
+| `/summary` | Today’s summary |
+| `/week`    | Last 7 days     |
+| `/month`   | Monthly summary |
+
+---
+
+### 🧾 Detail View
+
+```text
+/today
 ```
-Siap Alex! 💸
-Pengeluaran kamu tercatat:
+
+Shows:
+
+```text
+🧾 Pengeluaran Hari Ini:
 
 • kopi → Rp25,000
-• roti → Rp15,000
+• nasi goreng → Rp20,000
 
-Total: Rp40,000
+Total: Rp45,000
 ```
 
 ---
 
-### 📦 Structured Output
+### 📊 Insight (AI-style)
 
-```json
-{
-  "person": "Alex",
-  "expenses": [
-    {"name": "kopi", "amount": 25000},
-    {"name": "roti", "amount": 15000}
-  ]
-}
+```text
+/insight
+```
+
+Example:
+
+```text
+📊 Insight minggu ini:
+
+🍔 Food: 65%
+🚗 Transport: 20%
+
+💡 Kamu cukup sering jajan 😄
+```
+
+---
+
+## 🧱 Architecture
+
+```text
+Telegram → Python Bot → Gemini API → Google Apps Script → Google Sheets
 ```
 
 ---
 
 ## 📁 Project Structure
 
-```
-whatsapp-order-extractor/
-│
-├── data/
-│   ├── messages.txt
-│   └── ground_truth.csv
+```text
+telegram-ai-expense-tracker/
 │
 ├── src/
-│   ├── extractor.py
-│   ├── evaluator.py
 │   ├── telegram_bot.py
+│   ├── extractor.py
 │   ├── utils.py
-│   └── main.py
 │
-├── expenses_log.csv
+├── .env
 ├── requirements.txt
 └── README.md
 ```
@@ -88,35 +121,16 @@ whatsapp-order-extractor/
 
 ## ⚙️ Setup Instructions
 
-### 1. Install Ollama
-
-Download from: https://ollama.com
-
----
-
-### 2. Pull Model
+### 1. Clone Repository
 
 ```bash
-ollama pull gemma
-```
-
-> Optional (better performance):
-
-```bash
-ollama pull mistral
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
 ```
 
 ---
 
-### 3. Run Ollama
-
-```bash
-ollama serve
-```
-
----
-
-### 4. Setup Python Environment
+### 2. Setup Python Environment
 
 ```bash
 python -m venv venv
@@ -132,32 +146,57 @@ pip install -r requirements.txt
 
 ---
 
-### 5. Create Telegram Bot
+### 3. Setup Gemini API
+
+1. Go to Google AI Studio
+2. Generate API key
+
+Create `.env`:
+
+```env
+GEMINI_API_KEY=your_api_key
+GOOGLE_SCRIPT_URL=your_apps_script_url
+TELEGRAM_TOKEN=your_telegram_token
+```
+
+---
+
+### 4. Setup Google Sheets
+
+1. Create new sheet
+2. Name it: `expenses`
+3. Add columns:
+
+```text
+timestamp | item_name | amount | category
+```
+
+---
+
+### 5. Setup Google Apps Script
+
+In **Extensions → Apps Script**, paste your backend code.
+
+Then:
+
+* Deploy as Web App
+* Access: **Anyone**
+* Copy URL → use in `.env`
+
+---
+
+### 6. Create Telegram Bot
 
 1. Open Telegram
 2. Search **@BotFather**
 3. Run:
 
-```
+```text
 /start
 /newbot
 ```
 
-4. Copy your **BOT TOKEN**
-
----
-
-### 6. Configure Bot Token
-
-Edit:
-
-```
-src/telegram_bot.py
-```
-
-```python
-TOKEN = "YOUR_BOT_TOKEN"
-```
+4. Copy BOT TOKEN → put in `.env`
 
 ---
 
@@ -167,72 +206,79 @@ TOKEN = "YOUR_BOT_TOKEN"
 python src/telegram_bot.py
 ```
 
-Send a message to your bot and start tracking expenses.
+---
+
+## 🧪 Example Usage
+
+### Input
+
+```text
+aku beli kopi 25k sama roti 15k
+```
+
+---
+
+### Output
+
+```text
+💸 Pengeluaran tercatat:
+
+• kopi (food) → Rp25,000
+• roti (food) → Rp15,000
+
+Total: Rp40,000
+```
 
 ---
 
 ## 💾 Data Storage
 
-All expenses are saved in:
+All data stored in:
 
-```
-expenses_log.csv
-```
-
-Format:
-
-```
-timestamp,person,item_name,amount
-```
+* Google Sheets
+* Real-time updates
+* Easy to analyze (charts, pivot tables)
 
 ---
 
-## 📊 Evaluation (Optional)
+## 📊 Built-in Analytics
 
-You can still evaluate extraction accuracy using:
-
-```bash
-python src/main.py
-```
-
-Metrics:
-
-* Precision
-* Recall
-* F1-score
+* Daily summary
+* Weekly trends
+* Monthly overview
+* Category breakdown
+* Detail view
 
 ---
 
 ## ⚠️ Notes
 
-* Model output may vary → prompt tuning improves results
-* Supports formats like:
-
-  * `25k` → 25000
-  * `10rb` → 10000
-  * `1jt` → 1000000
-* JSON cleaning is applied to handle LLM formatting
+* Gemini free tier has daily limits
+* Internet connection required
+* LLM output may vary → prompt tuning helps
+* Data validation handled in Apps Script
 
 ---
 
-## 🔧 Improvements
+## 🔧 Future Improvements
 
-* Add category classification (food, transport, etc.)
-* Add database (PostgreSQL / Supabase)
-* Add dashboard (Streamlit / React)
-* Add multi-user tracking
-* Add conversation memory
+* Natural language queries (no commands needed)
+* Advanced insights (trend comparison)
+* Streak tracking (habit building)
+* Multi-user support
+* Dashboard UI (Streamlit / Web)
 
 ---
 
-## 🧠 Tech Summary
+## 🧠 Tech Stack Summary
 
-| Component    | Role                         |
-| ------------ | ---------------------------- |
-| Ollama       | Local LLM runtime            |
-| Gemma        | Text → structured extraction |
-| Telegram Bot | User interface               |
-| Python       | Backend logic                |
+| Component     | Role           |
+| ------------- | -------------- |
+| Gemini API    | NLP extraction |
+| Telegram Bot  | Chat interface |
+| Google Sheets | Database       |
+| Apps Script   | Backend API    |
+| Python        | Orchestration  |
 
 ---
 
