@@ -4,7 +4,7 @@ from utils import normalize_category
 
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "tinyllama"
+MODEL = "gemma"
 
 PROMPT_TEMPLATE = """
 You are an API that extracts daily expenses from Indonesian messages.
@@ -44,26 +44,7 @@ Message:
 """
 
 def extract_order(message: str):
-    prompt = f"""
-Extract expense from this message.
-
-Return JSON:
-{{"expenses":[{{"name":string,"amount":integer,"category":string}}]}}
-
-Rules:
-- Only extract what exists in the message
-- Do not invent data
-- One expense → one item
-- Convert 25k=25000
-- If no expense → return empty list
-
-Example:
-Message: aku beli nasi goreng 20000
-Output: {{"expenses":[{{"name":"nasi goreng","amount":20000,"category":"food"}}]}}
-
-Message:
-{message}
-"""
+    prompt = PROMPT_TEMPLATE.format(message=message)
 
     response = requests.post(
         OLLAMA_URL,
