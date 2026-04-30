@@ -36,7 +36,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Run extraction safely (non-blocking)
     result = await asyncio.to_thread(extract_order, user_text)
 
-    print("RESULT DARI OLLAMA:", result)
+
     send_to_sheets(result)
 
     # 1️⃣ Human response
